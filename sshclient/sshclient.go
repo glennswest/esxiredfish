@@ -8,12 +8,14 @@ import (
         "os"
 )
 
-func init {
-}
 
 func SshClientCmd(user, host, cmd  string) (string, error){
 
-        client, session, err := connectToHost(user, host);
+        myhost := host;
+        if (strings.Contains(myhost,":") == false){
+           myhost := host + ":22";
+           }
+        client, session, err := connectToHost(user, myhost);
         if (err != nil){
            return "",err;
            }
@@ -31,7 +33,6 @@ func connectToHost(user, host string) (*ssh.Client, *ssh.Session, error) {
         dir,err := os.UserHomeDir();
 
         sshpath := dir + "/.ssh/id_rsa";
-        fmt.Printf("Path = %s\n",sshpath);
         key, err := ioutil.ReadFile(sshpath)
 
         // Create the Signer for this private key.
