@@ -8,6 +8,8 @@ import (
         "os"
 )
 
+func init {
+}
 
 func SshClientCmd(user, host, cmd  string) (string, error){
 

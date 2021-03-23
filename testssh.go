@@ -2,10 +2,7 @@ package main
   
 import (
         "fmt"
-        "log"
-        "io/ioutil"
-        "golang.org/x/crypto/ssh"
-        "os"
+        "github.com/glennswest/esxiredfish/sshclient"
 )
 
 
