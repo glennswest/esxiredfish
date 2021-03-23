@@ -1,11 +1,11 @@
 package sshclient
 
 import (
-	"fmt"
 	"log"
         "io/ioutil"
 	"golang.org/x/crypto/ssh"
         "os"
+        "strings"
 )
 
 
@@ -13,7 +13,7 @@ func SshClientCmd(user, host, cmd  string) (string, error){
 
         myhost := host;
         if (strings.Contains(myhost,":") == false){
-           myhost := host + ":22";
+           myhost =  host + ":22";
            }
         client, session, err := connectToHost(user, myhost);
         if (err != nil){
