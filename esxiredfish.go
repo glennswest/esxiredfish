@@ -9,8 +9,9 @@ import "strconv"
 import "time"
 import "strings"
 //import "net/http"
-//import "github.com/tidwall/gjson"
-//import "github.com/tidwall/sjson"
+import "github.com/tidwall/gjson"
+import "github.com/tidwall/sjson"
+import esxi "github.com/glennswest/esxiredfish/esxilib"
 
 type ResetCommand struct {
     ResetType string `json:"resettype"`
@@ -40,7 +41,7 @@ func main() {
         r.GET("/redfish/v1/Systems/:chassis", func(c *gin.Context){
                 chassis := c.Param("chassis")
                 fmt.Printf("Chassis: %v\n",chassis);
-                sysinfo := GetSystemInfoBase("master-0.bm.lo")
+                sysinfo := GetSystemInfoBase(chassis)
                 c.Data(200, "application/json", []byte(sysinfo))
                 })
         r.POST("/redfish/v1/Systems/:chassis/Actions/ComputerSystem.Reset", func(c *gin.Context) {
@@ -60,11 +61,11 @@ func main() {
               c.Data(200, "application/json", []byte(actions))
               })
         r.GET("/redfish/v1/Systems/", func(c *gin.Context){
-              systems := SetBaseSystemsJson("master-0.gw.lo");
+              systems := SetBaseSystemsJson();
 	      c.Data(200, "application/json", []byte(systems))
               })
         r.GET("/redfish/v1/Systems", func(c *gin.Context){
-              systems := SetBaseSystemsJson("master-0.gw.lo");
+              systems := SetBaseSystemsJson();
 	      c.Data(200, "application/json", []byte(systems))
               })
         r.GET("/redfish/v1/", func(c *gin.Context){
@@ -124,27 +125,31 @@ json :=
    }`;
   return json;
 }
-func SetBaseSystemsJson(thesysid string) string {
-{
-
+func SetBaseSystemsJson() string {
 json := 
   `{
     "@odata.type": "#ComputerSystemCollection.ComputerSystemCollection",
     "Name": "Computer System Collection",
     "Id" : "Systems",
-    "Members@odata.count": 1,
+    "Members@odata.count": 0,
     "Members": [
-        {
-            "@odata.id": "/redfish/v1/Systems/${sysid}"
-        }
     ],
     "@odata.context": "/redfish/v1/$metadata#Systems",
     "@odata.id": "/redfish/v1/Systems"
     }`
-   json = strings.Replace(json,"${sysid}",thesysid,-1);
-   return json
-}
 
+    thelist := esxi.GetVmList();
+    println(thelist);
+    value :=  gjson.Get(thelist,"vmcount").String()
+    thecount, _ := strconv.Atoi(value);
+    for i := 0; i < thecount; i++ {
+       evalue := gjson.Get(thelist,"vmlist." + strconv.Itoa(i)).String();
+       thename := gjson.Get(evalue,"name").String();
+       odata := `{"@odata.id": "/redfish/v1/Systems/` + thename + `"}`;
+       json, _ = sjson.SetRaw(json,"Members.-1",odata);
+       }
+   json, _ = sjson.Set(json,"Members@odata.count", thecount);
+   return json
 }
 
 func GetSystemInfoBase(thesysid string) string {

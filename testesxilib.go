@@ -14,6 +14,10 @@ func main() {
 
      dnspowerstate := esxi.GetPowerState(dnsvmid);
      fmt.Printf("Power for dns.gw.lo = %s\n",dnspowerstate);
+
+     thelist := esxi.GetVmList();
+     fmt.Printf("%v",thelist);
+
 }
      
 
