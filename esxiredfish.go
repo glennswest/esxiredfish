@@ -7,6 +7,7 @@ import "github.com/gin-gonic/gin"
 import "fmt"
 import "strconv"
 import "time"
+import "strings"
 //import "net/http"
 //import "github.com/tidwall/gjson"
 //import "github.com/tidwall/sjson"
@@ -39,7 +40,7 @@ func main() {
         r.GET("/redfish/v1/Systems/:chassis", func(c *gin.Context){
                 chassis := c.Param("chassis")
                 fmt.Printf("Chassis: %v\n",chassis);
-                sysinfo := GetSystemInfoBase()
+                sysinfo := GetSystemInfoBase("master-0.bm.lo")
                 c.Data(200, "application/json", []byte(sysinfo))
                 })
         r.POST("/redfish/v1/Systems/:chassis/Actions/ComputerSystem.Reset", func(c *gin.Context) {
@@ -59,11 +60,11 @@ func main() {
               c.Data(200, "application/json", []byte(actions))
               })
         r.GET("/redfish/v1/Systems/", func(c *gin.Context){
-              systems := SetBaseSystemsJson();
+              systems := SetBaseSystemsJson("master-0.gw.lo");
 	      c.Data(200, "application/json", []byte(systems))
               })
         r.GET("/redfish/v1/Systems", func(c *gin.Context){
-              systems := SetBaseSystemsJson();
+              systems := SetBaseSystemsJson("master-0.gw.lo");
 	      c.Data(200, "application/json", []byte(systems))
               })
         r.GET("/redfish/v1/", func(c *gin.Context){
@@ -123,8 +124,9 @@ json :=
    }`;
   return json;
 }
-func SetBaseSystemsJson() string {
+func SetBaseSystemsJson(thesysid string) string {
 {
+
 json := 
   `{
     "@odata.type": "#ComputerSystemCollection.ComputerSystemCollection",
@@ -133,32 +135,33 @@ json :=
     "Members@odata.count": 1,
     "Members": [
         {
-            "@odata.id": "/redfish/v1/Systems/437XR1138R2"
+            "@odata.id": "/redfish/v1/Systems/${sysid}"
         }
     ],
     "@odata.context": "/redfish/v1/$metadata#Systems",
     "@odata.id": "/redfish/v1/Systems"
     }`
+   json = strings.Replace(json,"${sysid}",thesysid,-1);
    return json
 }
 
 }
 
-func GetSystemInfoBase() string {
+func GetSystemInfoBase(thesysid string) string {
 json :=
  `{
     "@odata.type": "#ComputerSystem.v1_1_0.ComputerSystem",
-    "Id": "437XR1138R2",
-    "Name": "WebFrontEnd483",
-    "SystemType": "Physical",
-    "AssetTag": "Chicago-45Z-2381",
+    "Id": "${sysid}",
+    "Name": "",
+    "SystemType": "Physical", 
+    "AssetTag": "${sysid}",
     "Manufacturer": "Contoso",
     "Model": "3500RX",
     "SKU": "8675309",
-    "SerialNumber": "437XR1138R2",
-    "PartNumber": "224071-J23",
-    "Description": "Web Front End node",
-    "UUID": "38947555-7742-3448-3784-823347823834",
+    "SerialNumber": "",
+    "PartNumber": "",
+    "Description": "",
+    "UUID": "",
     "HostName": "web483",
     "Status": {
         "State": "Enabled",
@@ -227,22 +230,22 @@ json :=
         }
     },
     "Bios": {
-        "@odata.id": "/redfish/v1/Systems/437XR1138R2/BIOS"
+        "@odata.id": "/redfish/v1/Systems/${sysid}/BIOS"
     },
     "Processors": {
-        "@odata.id": "/redfish/v1/Systems/437XR1138R2/Processors"
+        "@odata.id": "/redfish/v1/Systems/${sysid}/Processors"
     },
     "Memory": {
-        "@odata.id": "/redfish/v1/Systems/437XR1138R2/Memory"
+        "@odata.id": "/redfish/v1/Systems/${sysid}/Memory"
     },
     "EthernetInterfaces": {
-        "@odata.id": "/redfish/v1/Systems/437XR1138R2/EthernetInterfaces"
+        "@odata.id": "/redfish/v1/Systems/${sysid}/EthernetInterfaces"
     },
     "SimpleStorage": {
-        "@odata.id": "/redfish/v1/Systems/437XR1138R2/SimpleStorage"
+        "@odata.id": "/redfish/v1/Systems/${sysid}/SimpleStorage"
     },
     "LogServices": {
-        "@odata.id": "/redfish/v1/Systems/437XR1138R2/LogServices"
+        "@odata.id": "/redfish/v1/Systems/${sysid}/LogServices"
     },
     "Links": {
         "Chassis": [
@@ -258,7 +261,7 @@ json :=
     },
     "Actions": {
         "#ComputerSystem.Reset": {
-            "target": "/redfish/v1/Systems/437XR1138R2/Actions/ComputerSystem.Reset",
+            "target": "/redfish/v1/Systems/${sysid}/Actions/ComputerSystem.Reset",
             "ResetType@Redfish.AllowableValues": [
                 "On",
                 "ForceOff",
@@ -272,14 +275,15 @@ json :=
         },
         "Oem": {
             "#Contoso.Reset": {
-                "target": "/redfish/v1/Systems/437XR1138R2/Oem/Contoso/Actions/Contoso.Reset"
+                "target": "/redfish/v1/Systems/${sysid}/Oem/Contoso/Actions/Contoso.Reset"
             }
         }
     },
     "@odata.context": "/redfish/v1/$metadata#ComputerSystem.ComputerSystem",
-    "@odata.id": "/redfish/v1/Systems/437XR1138R2"
+    "@odata.id": "/redfish/v1/Systems/${sysid}"
     }
     `
+    json = strings.Replace(json,"${sysid}",thesysid,-1);
     return json;
 }
 
