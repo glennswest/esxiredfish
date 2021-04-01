@@ -310,18 +310,25 @@ func do_reset(cmd string,chassis string){
 //"Nmi",
 //"ForceOn"
 */
-       if (IsNumeric(chassis) == false){
-          chassis = getvmid(chassis);
-          }
-
        switch cmd {
          case "On":
+              esxi.PowerOnVm(chassis);
+              break;
          case "ForceOff":
-               
-         case "GracefulSHutdown":
+              esxi.PowerOffVm(chassis);
+              break;
+         case "GracefulShutdown":
+              esxi.PowerShutdownVm(chassis);
+              break;
          case "GracefullRestart":
+              esxi.RestartVm(chassis);
+              break;
          case "Nmi":
+              esxi.PowerOffVm(chassis);
+              break;
          case "ForceOn":
+              esxi.PowerOnVm(chassis);
+              break;
          }
 
 }

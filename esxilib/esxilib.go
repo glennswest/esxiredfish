@@ -1,7 +1,7 @@
 package esxilib
 
 import (
-        //"fmt"
+        "fmt"
         "strings"
         "github.com/jinzhu/configor"
         ssh "github.com/glennswest/esxiredfish/sshclient"
@@ -54,6 +54,40 @@ func GetVmid(thename string) string {
          }
     return "";
 }
+
+func PowerOffVm(thevm string){
+// vim-cmd vmsvc/power.off ${vmid}
+     thevmid := GetVmid(thevm);
+     cmd := "vim-cmd vmsvc/power.off " + thevmid;
+     doCmd(cmd);
+}
+
+func PowerOnVm(thevm string){
+// vim-cmd vmsvc/power.on ${vmid}
+     thevmid := GetVmid(thevm);
+     cmd := "vim-cmd vmsvc/power.on " + thevmid;
+     fmt.Printf("PowerON: %s\n",thevmid);
+     fmt.Printf("%s\n",cmd);
+     doCmd(cmd);
+}
+
+func PowerShutdownVm(thevm string){
+// vim-cmd vmsvc/power.shutdown ${vmid}
+
+     thevmid := GetVmid(thevm);
+     cmd := "vim-cmd vmsvc/power.shutdown " + thevmid;
+     doCmd(cmd);
+}
+
+func RestartVm(thevm string){
+// vim-cmd vmsvc/power.reboot ${vmid}
+
+     thevmid := GetVmid(thevm);
+     cmd := "vim-cmd vmsvc/power.reboot " + thevmid;
+     doCmd(cmd);
+}
+
+
 
 func GetPowerState(thevmid string) string {
 // vim-cmd vmsvc/power.getstate <Vmid>

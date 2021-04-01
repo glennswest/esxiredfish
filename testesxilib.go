@@ -18,6 +18,8 @@ func main() {
      thelist := esxi.GetVmList();
      fmt.Printf("%v",thelist);
 
+     esxi.PowerOffVm("master-0.bm.lo");
+
 }
      
 
