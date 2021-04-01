@@ -6,14 +6,42 @@ package main
 import "github.com/gin-gonic/gin"
 import "fmt"
 import "strconv"
-ssh "github.com/glennswest/esxiredfish/sshclient"
+import "time"
+//import "net/http"
+//import "github.com/tidwall/gjson"
+//import "github.com/tidwall/sjson"
 
 type ResetCommand struct {
     ResetType string `json:"resettype"`
 }
 
+
 func main() {
-	r := gin.Default();
+	//r := gin.Default();
+        r := gin.New()
+        r.Use(gin.LoggerWithFormatter(func(param gin.LogFormatterParams) string {
+
+		// your custom format
+		return fmt.Sprintf("%s - [%s] \"%s %s %s %d %s \"%s\" %s\"\n",
+				param.ClientIP,
+				param.TimeStamp.Format(time.RFC1123),
+				param.Method,
+				param.Path,
+				param.Request.Proto,
+				param.StatusCode,
+				param.Latency,
+				param.Request.UserAgent(),
+				param.ErrorMessage,
+		)
+	}))
+	r.Use(gin.Recovery())
+
+        r.GET("/redfish/v1/Systems/:chassis", func(c *gin.Context){
+                chassis := c.Param("chassis")
+                fmt.Printf("Chassis: %v\n",chassis);
+                sysinfo := GetSystemInfoBase()
+                c.Data(200, "application/json", []byte(sysinfo))
+                })
         r.POST("/redfish/v1/Systems/:chassis/Actions/ComputerSystem.Reset", func(c *gin.Context) {
 
                 var resetCmd ResetCommand
@@ -26,6 +54,22 @@ func main() {
 			"message": "pong",
 		})
         })
+        r.GET("/redfish/v1/Actions", func(c *gin.Context){
+              actions := "{}";
+              c.Data(200, "application/json", []byte(actions))
+              })
+        r.GET("/redfish/v1/Systems/", func(c *gin.Context){
+              systems := SetBaseSystemsJson();
+	      c.Data(200, "application/json", []byte(systems))
+              })
+        r.GET("/redfish/v1/Systems", func(c *gin.Context){
+              systems := SetBaseSystemsJson();
+	      c.Data(200, "application/json", []byte(systems))
+              })
+        r.GET("/redfish/v1/", func(c *gin.Context){
+              baseapi := GetBaseJson();
+              c.Data(200, "application/json", []byte(baseapi))
+              })
 	r.GET("/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"message": "pong",
@@ -39,9 +83,211 @@ func IsNumeric(s string) bool {
    return err == nil
 }
  
+func GetBaseJson() string {
+json :=
+  `{
+    "@odata.context": "/redfish/v1/$metadata#ServiceRoot",
+    "@odata.type": "#ServiceRoot.v1_1_1.ServiceRoot",
+    "@odata.id": "/redfish/v1",
+    "Id": "v1",
+    "Name": "Root Service",
+    "RedfishVersion": "1.0.1",
+    "UUID": "ec5a4deb-9cdb-461e-8c25-5fdb22dd36d5",
+    "Chassis": {
+        "@odata.id": "/redfish/v1/Chassis"
+    },
+    "Systems": {
+        "@odata.id": "/redfish/v1/Systems"
+    },
+    "Managers": {
+        "@odata.id": "/redfish/v1/Managers"
+    },
+    "Tasks": {
+        "@odata.id": "/redfish/v1/TaskService"
+    },
+    "SessionService": {
+        "@odata.id": "/redfish/v1/SessionService"
+    },
+    "AccountService": {
+        "@odata.id": "/redfish/v1/AccountService"
+    },
+    "EventService": {
+        "@odata.id": "/redfish/v1/EventService"
+    },
+    "Registries": {
+        "@odata.id": "/redfish/v1/Registries"
+    },
+    "CompositionService": {
+        "@odata.id": "/redfish/v1/CompositionService"
+    }
+   }`;
+  return json;
+}
+func SetBaseSystemsJson() string {
+{
+json := 
+  `{
+    "@odata.type": "#ComputerSystemCollection.ComputerSystemCollection",
+    "Name": "Computer System Collection",
+    "Id" : "Systems",
+    "Members@odata.count": 1,
+    "Members": [
+        {
+            "@odata.id": "/redfish/v1/Systems/437XR1138R2"
+        }
+    ],
+    "@odata.context": "/redfish/v1/$metadata#Systems",
+    "@odata.id": "/redfish/v1/Systems"
+    }`
+   return json
+}
+
+}
+
+func GetSystemInfoBase() string {
+json :=
+ `{
+    "@odata.type": "#ComputerSystem.v1_1_0.ComputerSystem",
+    "Id": "437XR1138R2",
+    "Name": "WebFrontEnd483",
+    "SystemType": "Physical",
+    "AssetTag": "Chicago-45Z-2381",
+    "Manufacturer": "Contoso",
+    "Model": "3500RX",
+    "SKU": "8675309",
+    "SerialNumber": "437XR1138R2",
+    "PartNumber": "224071-J23",
+    "Description": "Web Front End node",
+    "UUID": "38947555-7742-3448-3784-823347823834",
+    "HostName": "web483",
+    "Status": {
+        "State": "Enabled",
+        "Health": "OK",
+        "HealthRollUp": "OK"
+    },
+    "IndicatorLED": "Off",
+    "PowerState": "On",
+    "Boot": {
+        "BootSourceOverrideEnabled": "Once",
+        "BootSourceOverrideTarget": "Pxe",
+        "BootSourceOverrideTarget@Redfish.AllowableValues": [
+            "None",
+            "Pxe",
+            "Cd",
+            "Usb",
+            "Hdd",
+            "BiosSetup",
+            "Utilities",
+            "Diags",
+            "SDCard",
+            "UefiTarget"
+        ],
+        "BootSourceOverrideMode": "UEFI",
+        "UefiTargetBootSourceOverride": "/0x31/0x33/0x01/0x01"
+    },
+    "TrustedModules": [
+        {
+            "FirmwareVersion": "1.13b",
+            "InterfaceType": "TPM1_2",
+            "Status": {
+                "State": "Enabled",
+                "Health": "OK"
+            }
+        }
+    ],
+    "Oem": {
+        "Contoso": {
+            "@odata.type": "http://Contoso.com/Schema#Contoso.ComputerSystem",
+            "ProductionLocation": {
+                "FacilityName": "PacWest Production Facility",
+                "Country": "USA"
+            }
+        },
+        "Chipwise": {
+            "@odata.type": "http://Chipwise.com/Schema#Chipwise.ComputerSystem",
+            "Style": "Executive"
+        }
+    },
+    "BiosVersion": "P79 v1.33 (02/28/2015)",
+    "ProcessorSummary": {
+        "Count": 2,
+        "ProcessorFamily": "Multi-Core Intel(R) Xeon(R) processor 7xxx Series",
+        "Status": {
+            "State": "Enabled",
+            "Health": "OK",
+            "HealthRollUp": "OK"
+        }
+    },
+    "MemorySummary": {
+        "TotalSystemMemoryGiB": 96,
+        "Status": {
+            "State": "Enabled",
+            "Health": "OK",
+            "HealthRollUp": "OK"
+        }
+    },
+    "Bios": {
+        "@odata.id": "/redfish/v1/Systems/437XR1138R2/BIOS"
+    },
+    "Processors": {
+        "@odata.id": "/redfish/v1/Systems/437XR1138R2/Processors"
+    },
+    "Memory": {
+        "@odata.id": "/redfish/v1/Systems/437XR1138R2/Memory"
+    },
+    "EthernetInterfaces": {
+        "@odata.id": "/redfish/v1/Systems/437XR1138R2/EthernetInterfaces"
+    },
+    "SimpleStorage": {
+        "@odata.id": "/redfish/v1/Systems/437XR1138R2/SimpleStorage"
+    },
+    "LogServices": {
+        "@odata.id": "/redfish/v1/Systems/437XR1138R2/LogServices"
+    },
+    "Links": {
+        "Chassis": [
+            {
+                "@odata.id": "/redfish/v1/Chassis/1U"
+            }
+        ],
+        "ManagedBy": [
+            {
+                "@odata.id": "/redfish/v1/Managers/BMC"
+            }
+        ]
+    },
+    "Actions": {
+        "#ComputerSystem.Reset": {
+            "target": "/redfish/v1/Systems/437XR1138R2/Actions/ComputerSystem.Reset",
+            "ResetType@Redfish.AllowableValues": [
+                "On",
+                "ForceOff",
+                "GracefulShutdown",
+                "GracefulRestart",
+                "ForceRestart",
+                "Nmi",
+                "ForceOn",
+                "PushPowerButton"
+            ]
+        },
+        "Oem": {
+            "#Contoso.Reset": {
+                "target": "/redfish/v1/Systems/437XR1138R2/Oem/Contoso/Actions/Contoso.Reset"
+            }
+        }
+    },
+    "@odata.context": "/redfish/v1/$metadata#ComputerSystem.ComputerSystem",
+    "@odata.id": "/redfish/v1/Systems/437XR1138R2"
+    }
+    `
+    return json;
+}
+
 func getvmid(thename string) string {
+/*
 // vim-cmd vmsvc/getallvms
-  
+*/
+     return "";
 
 }
 
@@ -55,12 +301,12 @@ func do_reset(cmd string,chassis string){
 //"Nmi",
 //"ForceOn"
 */
-       if (isNumeric(chassis) == false){
+       if (IsNumeric(chassis) == false){
           chassis = getvmid(chassis);
           }
 
        switch cmd {
-         case "On:
+         case "On":
          case "ForceOff":
                
          case "GracefulSHutdown":
