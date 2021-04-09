@@ -7,4 +7,9 @@ mv esxiredfish-${theversion}.rpm rpms
 (cd rpms;ls -t | tail -n +2 | xargs rm -- )
 rm -r -f rpms/repodata
 createrepo rpms
-yum clean all
+#yum clean all
+git add *
+git commit -m "Update after build"
+git push
+yum update -y esxiredfish
+
