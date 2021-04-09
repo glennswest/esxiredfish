@@ -66,6 +66,10 @@ func main() {
 
 func redfishserver() {
         //gin.SetMode(gin.ReleaseMode)
+        gin.DisableConsoleColor();
+        f, _ := os.Create("/var/log/esxiredfish.log");
+        g.DefaultWriter = io.MultiWriter(f);
+
         r := gin.New();
         r.Use(gin.Recovery());
 
