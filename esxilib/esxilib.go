@@ -55,6 +55,7 @@ func GetVmid(thename string) string {
     return "";
 }
 
+
 func PowerOffVm(thevm string){
 // vim-cmd vmsvc/power.off ${vmid}
      thevmid := GetVmid(thevm);
@@ -89,9 +90,10 @@ func RestartVm(thevm string){
 
 
 
-func GetPowerState(thevmid string) string {
+func GetPowerState(thevm string) string {
 // vim-cmd vmsvc/power.getstate <Vmid>
 
+     thevmid := GetVmid(thevm);
      cmd := "vim-cmd vmsvc/power.getstate " + thevmid;
      result, _ := doCmd(cmd);
      lines := strings.Split(result,"\n");
@@ -99,8 +101,8 @@ func GetPowerState(thevmid string) string {
         return("invalid");
         }
      switch(lines[1]){
-         case "Powered on": return("on");
-         case "Powered off": return("off");
+         case "Powered on": return("On");
+         case "Powered off": return("Off");
          default:      return("unknown");
          }
      return "impossible";

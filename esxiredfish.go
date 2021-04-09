@@ -11,14 +11,57 @@ import "strings"
 //import "net/http"
 import "github.com/tidwall/gjson"
 import "github.com/tidwall/sjson"
+import "github.com/kardianos/service"
 import esxi "github.com/glennswest/esxiredfish/esxilib"
+import "log"
 
 type ResetCommand struct {
     ResetType string `json:"resettype"`
 }
 
 
+var logger service.Logger
+
+type program struct{}
+
+func (p *program) Start(s service.Service) error {
+	// Start should not block. Do the actual work async.
+	go p.run()
+	return nil
+}
+func (p *program) run() {
+	// Do work here
+        redfishserver();
+}
+
+func (p *program) Stop(s service.Service) error {
+	// Stop should not block. Return with a few seconds.
+	return nil
+}
+
 func main() {
+	svcConfig := &service.Config{
+		Name:        "redfishesxi",
+		DisplayName: "RedFishESXI",
+		Description: "RedFish to VmWare ESXI BMC Server",
+	}
+
+	prg := &program{}
+	s, err := service.New(prg, svcConfig)
+	if err != nil {
+		log.Fatal(err)
+	}
+	logger, err = s.Logger(nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = s.Run()
+	if err != nil {
+		logger.Error(err)
+	}
+}
+
+func redfishserver() {
 	//r := gin.Default();
         r := gin.New()
         r.Use(gin.LoggerWithFormatter(func(param gin.LogFormatterParams) string {
@@ -160,14 +203,14 @@ json :=
     "Name": "",
     "SystemType": "Physical", 
     "AssetTag": "${sysid}",
-    "Manufacturer": "Contoso",
+    "Manufacturer": "NCC Inc",
     "Model": "3500RX",
     "SKU": "8675309",
     "SerialNumber": "",
     "PartNumber": "",
     "Description": "",
     "UUID": "",
-    "HostName": "web483",
+    "HostName": "${sysid}",
     "Status": {
         "State": "Enabled",
         "Health": "OK",
@@ -286,8 +329,13 @@ json :=
     },
     "@odata.context": "/redfish/v1/$metadata#ComputerSystem.ComputerSystem",
     "@odata.id": "/redfish/v1/Systems/${sysid}"
-    }
-    `
+    }`
+
+
+
+    powerstate := esxi.GetPowerState(thesysid);
+    
+    json, _ = sjson.SetRaw(json,"PowerState",powerstate);
     json = strings.Replace(json,"${sysid}",thesysid,-1);
     return json;
 }
