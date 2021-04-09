@@ -1,0 +1,6 @@
+[esxiredfish]
+name=EsxiRedfish
+baseurl=https://raw.githubusercontent.com/glennswest/esxiredfish/tree/main/rpms
+enabled=1
+gpgcheck=0
+
