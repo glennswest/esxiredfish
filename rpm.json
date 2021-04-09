@@ -1,0 +1,27 @@
+{
+  "name": "esxiredfish",
+  "version": "!version!",
+  "arch": "!arch!",
+  "release": "1",
+  "summary": "Redfish REST API to Vmware Esxi",
+  "group": "Applications/Internet",
+  "license": "GPLv2",
+  "url": "https://github.com/glennswest/esxiredfish",
+  "description": "Linux Service for RHEL8 that implemented Redfish REST API",
+  "changelog-cmd": "changelog rpm",
+  "files": [
+    {
+      "from": "esxiredfish",
+      "to": "%{_bindir}/",
+      "base": "",
+      "type": ""
+    },
+    {
+      "from": "esxiredfish.yaml",
+      "to": "/etc/",
+      "base": "",
+      "type": ""
+    }
+  ],
+}
+
