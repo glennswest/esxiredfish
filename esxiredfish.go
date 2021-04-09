@@ -3,6 +3,8 @@ package main
 // Reference
 // https://www.supermicro.com/manuals/other/RedfishRefGuide.pdf
 
+import "os"
+import "io"
 import "github.com/gin-gonic/gin"
 import "fmt"
 import "strconv"
@@ -68,7 +70,7 @@ func redfishserver() {
         //gin.SetMode(gin.ReleaseMode)
         gin.DisableConsoleColor();
         f, _ := os.Create("/var/log/esxiredfish.log");
-        g.DefaultWriter = io.MultiWriter(f);
+        gin.DefaultWriter = io.MultiWriter(f);
 
         r := gin.New();
         r.Use(gin.Recovery());
