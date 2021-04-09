@@ -16,7 +16,7 @@ var Config = struct {
 }{}
 
 func init(){
-     configor.Load(&Config,"config.yaml");
+     configor.Load(&Config,"/etc/esxiredfish.yaml");
 }
 
 func GetVmList() string {

@@ -62,7 +62,9 @@ func main() {
 }
 
 func redfishserver() {
-	//r := gin.Default();
+        gin.SetMode(gin.ReleaseMode)
+	r := gin.Default();
+/*
         r := gin.New()
         r.Use(gin.LoggerWithFormatter(func(param gin.LogFormatterParams) string {
 
@@ -80,6 +82,7 @@ func redfishserver() {
 		)
 	}))
 	r.Use(gin.Recovery())
+*/
 
         r.GET("/redfish/v1/Systems/:chassis", func(c *gin.Context){
                 chassis := c.Param("chassis")
