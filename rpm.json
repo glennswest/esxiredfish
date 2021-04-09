@@ -8,7 +8,6 @@
   "license": "GPLv2",
   "url": "https://github.com/glennswest/esxiredfish",
   "description": "Linux Service for RHEL8 that implemented Redfish REST API",
-  "changelog-cmd": "changelog rpm",
   "files": [
     {
       "from": "esxiredfish",
@@ -22,6 +21,6 @@
       "base": "",
       "type": ""
     }
-  ],
+  ]
 }
 
