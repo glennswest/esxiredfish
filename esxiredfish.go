@@ -6,7 +6,7 @@ package main
 import "github.com/gin-gonic/gin"
 import "fmt"
 import "strconv"
-import "time"
+//import "time"
 import "strings"
 //import "net/http"
 import "github.com/tidwall/gjson"
@@ -39,6 +39,9 @@ func (p *program) Stop(s service.Service) error {
 	return nil
 }
 
+func init() {
+}
+
 func main() {
 	svcConfig := &service.Config{
 		Name:        "redfishesxi",
@@ -63,26 +66,8 @@ func main() {
 
 func redfishserver() {
         gin.SetMode(gin.ReleaseMode)
-	r := gin.Default();
-/*
-        r := gin.New()
-        r.Use(gin.LoggerWithFormatter(func(param gin.LogFormatterParams) string {
-
-		// your custom format
-		return fmt.Sprintf("%s - [%s] \"%s %s %s %d %s \"%s\" %s\"\n",
-				param.ClientIP,
-				param.TimeStamp.Format(time.RFC1123),
-				param.Method,
-				param.Path,
-				param.Request.Proto,
-				param.StatusCode,
-				param.Latency,
-				param.Request.UserAgent(),
-				param.ErrorMessage,
-		)
-	}))
-	r.Use(gin.Recovery())
-*/
+        r := gin.New();
+        r.Use(gin.Recovery());
 
         r.GET("/redfish/v1/Systems/:chassis", func(c *gin.Context){
                 chassis := c.Param("chassis")

@@ -1,0 +1,14 @@
+[Unit]
+Description=esxiredfish service - rest api to esxi vmware server
+Documentation=https://github.com/glennswest/esxiredfish
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/esxiredfish
+StandardOutput=null
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+Alias=esxiredfish.service
+

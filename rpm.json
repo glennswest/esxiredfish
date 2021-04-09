@@ -16,6 +16,12 @@
       "type": ""
     },
     {
+      "from": "esxiredfish.service",
+      "to": "/etc/systemd/system/",
+      "base": "",
+      "type": ""
+    },
+    {
       "from": "esxiredfish.yaml",
       "to": "/etc/",
       "base": "",
