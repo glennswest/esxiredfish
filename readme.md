@@ -1,9 +1,13 @@
 
 
 
+### Installing
+Add the repo. 
+ yum-config-manager --add-repo https://raw.githubusercontent.com/glennswest/esxiredfish/main/esxiredfish.repo 
+Install the service. 
+ yum install esxiredfish
+
 ### Building
-Rpm packaging is done by togo
-
-
-yum install https://github.com/genereese/togo/releases/download/v2.6r2/togo-2.6-2.noarch.rpm
+A build.sh script is included.
+You will need golang installed, as well as the rpm building tool.
 
