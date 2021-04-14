@@ -332,7 +332,7 @@ json :=
 
     powerstate := esxi.GetPowerState(thesysid);
     
-    json, _ = sjson.SetRaw(json,"PowerState",powerstate);
+    json, _ = sjson.Set(json,"PowerState",powerstate);
     json = strings.Replace(json,"${sysid}",thesysid,-1);
     return json;
 }
