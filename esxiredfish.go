@@ -117,7 +117,7 @@ func redfishserver() {
 			"message": "pong",
 		})
 	})
-	r.Run(":8080") // listen and serve 
+	r.Run("0.0.0.0:8080") // listen and serve 
 }
 
 func IsNumeric(s string) bool {
