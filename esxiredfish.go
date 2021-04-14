@@ -23,7 +23,6 @@ type ResetCommand struct {
 }
 
 
-var build-id string;
 
 var logger service.Logger
 
@@ -48,6 +47,7 @@ func init() {
 }
 
 func main() {
+
 	svcConfig := &service.Config{
 		Name:        "redfishesxi",
 		DisplayName: "RedFishESXI",
