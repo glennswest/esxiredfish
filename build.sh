@@ -1,5 +1,5 @@
 export theversion=1.`./incrementbuild.sh`.0-1
-env CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build esxiredfish.go
+env CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build esxiredfish.go -ldflags "-X main.sha1ver=$theversion}"
 export theversion=1.`./incrementbuild.sh`.0-1
 export thedir=`pwd | sed 's:/*$::'`
 echo ${thedir}

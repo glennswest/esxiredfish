@@ -23,6 +23,8 @@ type ResetCommand struct {
 }
 
 
+var build-id string;
+
 var logger service.Logger
 
 type program struct{}
