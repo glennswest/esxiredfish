@@ -30,9 +30,10 @@ func SshClientCmd(user, host, cmd  string) (string, error){
 
 func connectToHost(user, host string) (*ssh.Client, *ssh.Session, error) {
 
-        dir,err := os.UserHomeDir();
+        //dir,err := os.UserHomeDir();
+        //sshpath := dir + "/.ssh/id_rsa";
+        sshpath := "/root/.ssh/id_rsa";
 
-        sshpath := dir + "/.ssh/id_rsa";
         key, err := ioutil.ReadFile(sshpath)
 
         // Create the Signer for this private key.
