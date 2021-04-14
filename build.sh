@@ -1,4 +1,3 @@
-set -e
 go build esxiredfish.go
 export theversion=1.`./incrementbuild.sh`.0-1
 export thedir=`pwd | sed 's:/*$::'`
