@@ -13,6 +13,7 @@ import "github.com/tidwall/sjson"
 var Config = struct {
     Host string `default:"192.168.1.150"`
     User string `default:"root"`
+    Listen string `default:"192.168.1.151"`
 }{}
 
 func init(){

@@ -15,6 +15,7 @@ import "github.com/tidwall/gjson"
 import "github.com/tidwall/sjson"
 import "github.com/kardianos/service"
 import esxi "github.com/glennswest/esxiredfish/esxilib"
+//import "github.com/jinzhu/configor"
 import "log"
 
 type ResetCommand struct {
